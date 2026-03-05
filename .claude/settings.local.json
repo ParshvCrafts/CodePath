@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest test/test_game_logic.py -v)",
+      "Bash(python -m pytest test/test_game_logic.py -v --tb=short)"
+    ]
+  }
+}
