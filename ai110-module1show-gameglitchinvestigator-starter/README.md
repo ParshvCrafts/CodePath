@@ -29,11 +29,11 @@ It wrote the code, ran away, and now the game is unplayable.
 - [x] Detail which bugs you found.
 - [x] Explain what fixes you applied.
 
-**What the game does:** It's a number guessing game built with Streamlit. You pick a difficulty, the app picks a random secret number, and you try to guess it within a limited number of attempts. After each guess it tells you to go higher or lower.
+**What the game does:** It is a number guessing game built with Streamlit. You pick a difficulty, the app picks a random secret number, and you try to guess it within a limited number of attempts. After each guess it tells you to go higher or lower.
 
 **Bugs I found:**
 1. **Inverted hints** — When I guessed 50 and the secret was 60, it told me to go LOWER instead of higher. The root cause was two things working together: the outcome labels in `check_guess()` were swapped, and the code was converting the secret to a string on even attempts, which caused Python to do ASCII comparison instead of numeric comparison.
-2. **Double-submit required** — You had to click Submit twice because the text input and button were separate Streamlit widgets, causing two reruns instead of one.
+2. **Double-submit required** — I had to click Submit twice because the text input and button were separate Streamlit widgets, causing two reruns instead of one.
 3. **New Game broken** — Pressing New Game never reset `status` back to "playing" or cleared the history, so it kept saying "You already won" even after clicking it.
 4. **Attempts started at 1** instead of 0, throwing off the count and triggering the string bug on the very first guess.
 5. **Invalid input wasted turns** — Typing garbage incremented the attempt counter before validation.
