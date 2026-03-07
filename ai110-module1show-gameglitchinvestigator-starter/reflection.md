@@ -44,6 +44,12 @@ The AI helped me think about edge cases I wouldn't have considered on my own, li
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 - What change did you make that finally gave the game a stable secret number?
 
+The secret number kept changing because of how Streamlit works under the hood. Every time you click a button or type something, Streamlit literally reruns your entire Python script from top to bottom. So if you just write `secret = random.randint(1, 100)` as a normal variable, it gets a brand new random number on every single click. That's why it felt impossible to win — you were chasing a moving target.
+
+If I had to explain it to a friend, I'd say think of it like a whiteboard that gets erased and redrawn every time you interact with it. Anything you write on the whiteboard disappears unless you stick it in a drawer first. In Streamlit, that "drawer" is `st.session_state` — it's a dictionary that survives across reruns. So instead of `secret = random.randint(1, 100)`, you write `if "secret" not in st.session_state: st.session_state.secret = random.randint(1, 100)`. That way it only picks a number the first time, and every rerun after that just reads it from the drawer instead of rolling a new one.
+
+The original code actually already had the `session_state` check for the secret, so the number itself was stable. The real issue was that other things around it were broken — the attempt counter started at 1 instead of 0, the secret got converted to a string on even attempts, and the text input triggered extra reruns that made it seem like things were resetting. Fixing the `st.form` wrapper and the state initialization is what made the game feel stable and predictable.
+
 ---
 
 ## 5. Looking ahead: your developer habits
@@ -52,3 +58,9 @@ The AI helped me think about edge cases I wouldn't have considered on my own, li
   - This could be a testing habit, a prompting strategy, or a way you used Git.
 - What is one thing you would do differently next time you work with AI on a coding task?
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+
+The biggest habit I'm taking away from this is writing regression tests for the exact bugs I found. Not just general tests that check if things work, but tests that recreate the specific broken scenario — like "guess 50, secret is 60, make sure it says HIGHER and not LOWER." That way if something ever breaks again in the same way, I'll catch it immediately instead of finding out by playing the game and scratching my head. I also want to keep separating logic into its own file so it's actually testable without needing to spin up the whole UI.
+
+Next time I work with AI on a coding task, I'd push back sooner when the first suggestion doesn't fully explain what I'm seeing. In this project the AI initially said "the labels are just swapped" which was only half the story. I should have said "okay but why does it still break on the first guess specifically?" right away instead of accepting the partial answer. Being more specific with my follow-up questions would have gotten us to the real root cause faster.
+
+This project honestly changed how much I trust AI-generated code. The original game was written by an AI and it looked clean and reasonable at first glance, but it had some really sneaky bugs hidden in there — like converting numbers to strings on alternating turns. It taught me that AI can write code that looks right but has subtle logic errors buried in it, so you really need to test and play with it yourself before you trust it.
