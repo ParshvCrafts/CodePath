@@ -24,3 +24,7 @@ Thumbs.db
 
 # Streamlit secrets
 .streamlit/secrets.toml
+
+# Claude Code
+.claude/
+.playwright-mcp/
